@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bjerring Tournament Generator</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #f5f5f5;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 2rem;
+    }
+    h1 {
+      color: coral;
+      font-size: 2.5rem;
+      margin-top: 2rem;
+    }
+    .container {
+      background: #121212;
+      padding: 2rem;
+      border-radius: 1rem;
+      max-width: 800px;
+      width: 90%;
+      box-shadow: 0 0 20px rgba(0,255,255,0.1);
+      margin-bottom: 1.5rem;
+    }
+    .info-box {
+      background: #1a1a1a;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-left: 4px solid teal;
+    }
+    .info-box h3 {
+      margin-top: 0;
+      color: coral;
+    }
+    .info-box h3:not(:first-child) {
+      margin-top: 1.5rem;
+    }
+    .info-box ol {
+      padding-left: 1.5rem;
+      margin-top: 0.5rem;
+    }
+    .info-box li {
+      margin-bottom: 0.5rem;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    input, button, select {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border-radius: 0.5rem;
+      border: none;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    input {
+      background: #1e1e1e;
+      color: #fff;
+    }
+    button {
+      background: teal;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background: coral;
+    }
+    pre {
+      background: #1a1a1a;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    .round {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: #1e1e1e;
+      border-radius: 0.5rem;
+    }
+    .round-title {
+      font-weight: bold;
+      color: coral;
+      margin-bottom: 0.5rem;
+    }
+    .court {
+      margin-left: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .error {
+      color: #ff6b6b;
+      margin-top: 0.5rem;
+    }
+    .info-text {
+      color: #4ecdc4;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .recommendation-text {
+      color: #4ecdc4;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      padding: 0.5rem;
+      background: rgba(78, 205, 196, 0.1);
+      border-radius: 0.3rem;
+      border-left: 3px solid #4ecdc4;
+    }
+    .warning-text {
+      color: #ffd166;
+      margin-top: 0.5rem;
+    }
+    .sub-round {
+      border-left: 3px solid #ffd166;
+      margin-left: 0.5rem;
+      padding-left: 0.5rem;
+    }
+    .coffee-container {
+      margin-top: 1rem;
+    }
+    .hidden {
+      display: none;
+    }
+    .results-container {
+      margin-top: 1.5rem;
+    }
+    .player-tracking {
+      display: none; /* Only show in print mode */
+      margin-top: 2rem;
+    }
+    .tracking-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+    .tracking-table th, .tracking-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .tracking-table th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+    .tracking-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .tracking-notes {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #f5f5f5;
+      border-radius: 0.5rem;
+    }
+    .tracking-notes h4 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+    }
+    .tracking-notes p {
+      margin: 0.25rem 0;
+    }
+    @media print {
+      body {
+        background: white;
+        color: #333;
+        font-family: 'Arial', sans-serif;
+        padding: 0;
+        margin: 0;
+      }
+      .container {
+        background: white;
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+        font-size: 24pt;
+        margin-bottom: 10px;
+      }
+      .info-box, .form-group, .coffee-container {
+        display: none;
+      }
+      .results-container {
+        margin-top: 0;
+      }
+      .results-container h3 {
+        color: #333;
+        font-size: 18pt;
+        text-align: center;
+        margin-bottom: 5px;
+      }
+      .print-header {
+        text-align: center;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 10px;
+      }
+      .print-header p {
+        margin: 5px 0;
+        font-size: 12pt;
+      }
+      .round {
+        background: white;
+        color: #333;
+        border: 1px solid #ccc;
+        border-radius: 0;
+        margin-bottom: 15px;
+        page-break-inside: avoid;
+      }
+      .round-title {
+        color: #333;
+        background: #f5f5f5;
+        padding: 8px;
+        border-bottom: 1px solid #ccc;
+        font-size: 14pt;
+      }
+      .court {
+        padding: 8px 15px;
+        margin: 0;
+        font-size: 12pt;
+      }
+      .court:nth-child(even) {
+        background: #f9f9f9;
+      }
+      .no-print {
+        display: none;
+      }
+      .print-footer {
+        text-align: center;
+        font-size: 10pt;
+        color: #777;
+        margin-top: 20px;
+        border-top: 1px solid #ccc;
+        padding-top: 10px;
+      }
+      pre {
+        background: white;
+      }
+      .error {
+        color: #d9534f;
+      }
+      .player-tracking {
+        display: block;
+        page-break-before: always;
+        margin-top: 20px;
+      }
+      .tracking-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .tracking-table th {
+        background-color: #f5f5f5 !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+      }
+      .tracking-table tr:nth-child(even) {
+        background-color: #f9f9f9 !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+      }
+      .tracking-notes {
+        background-color: #f5f5f5 !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+        border: 1px solid #ddd;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Bjerring Tournament Generator</h1>
+  <div class="container">
+    <div class="info-box">
+      <h3>What is a Bjerring Tournament?</h3>
+      <p>A Bjerring Tournament is a volleyball format where every player gets to play with and against every other player. It's ideal for practice sessions, skill development, and team building.</p>
+      <p>Players are assigned numbers, and each round features different pairings to ensure everyone plays with everyone else. This generator creates optimal schedules for 4-16 players.</p>
+      
+      <h3>How to Run a Bjerring Tournament</h3>
+      <ol>
+        <li><strong>Setup:</strong> Count your players and set up the recommended number of courts (the app will suggest the optimal court count).</li>
+        <li><strong>Number Players:</strong> Assign each player a unique number (1-16). Record player number and name on a whiteboard or clipboard for reference.</li>
+        <li><strong>Track Scores:</strong> Set up a whiteboard or large sheet of paper with all player numbers. After each round, add each player's points to their cumulative score.</li>
+        <li><strong>Timing:</strong> You can run the entire tournament in one session (typically 1-3 hours depending on player count) or spread rounds across multiple practices.</li>
+        <li><strong>Rotation:</strong> After each round, players find their new partners and opponents according to the schedule. Announce the next round clearly.</li>
+        <li><strong>Sitting Players:</strong> For odd-numbered player counts, some players will sit out each round. They can serve as scorekeepers or help with court management.</li>
+        <li><strong>Celebration:</strong> At the end, recognize the player with the highest cumulative score as the tournament champion!</li>
+      </ol>
+      
+      <p><em>Tip: Print the schedule before your session so you can easily track progress and keep things moving smoothly.</em></p>
+    </div>
+    
+    <div class="form-group">
+      <label for="playerCount">Number of Players (4–16):</label>
+      <input type="number" id="playerCount" min="4" max="16" value="8" onchange="updateCourtRecommendation()" />
+      <div id="playerCountError" class="error hidden">Please enter a number between 4 and 16.</div>
+      <div id="courtRecommendation" class="recommendation-text"></div>
+    </div>
+    
+    <div class="form-group">
+      <label for="courtCount">Number of Available Courts:</label>
+      <input type="number" id="courtCount" min="1" max="5" value="2" />
+      <div id="courtCountError" class="error hidden">Please enter a number between 1 and 5.</div>
+      <div id="requiredCourtsInfo" class="info-text"></div>
+    </div>
+    
+    <div class="form-group">
+      <label for="roundTime">Round Duration (minutes):</label>
+      <select id="roundTime">
+        <option value="3">3 minutes</option>
+        <option value="5" selected>5 minutes</option>
+        <option value="7">7 minutes</option>
+        <option value="10">10 minutes</option>
+        <option value="15">15 minutes</option>
+      </select>
+    </div>
+    
+    <button onclick="generate()">Generate Schedule</button>
+    
+    <div id="results-container" class="results-container hidden">
+      <h3>Tournament Schedule</h3>
+      <div class="no-print">
+        <button onclick="exportPDF()" style="background-color: #4CAF50;">Export as PDF</button>
+      </div>
+      <div id="results"></div>
+      <div class="print-footer">
+        Generated with Bjerring Tournament Generator | Date: <span id="print-date"></span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="coffee-container">
+    <!-- Buy Me a Coffee Button -->
+    <script type="text/javascript" 
+      src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" 
+      data-name="bmc-button" 
+      data-slug="L07BUWZ5Xt" 
+      data-color="#FF5F5F" 
+      data-emoji=""  
+      data-font="Cookie" 
+      data-text="Buy me a coffee" 
+      data-outline-color="#000000" 
+      data-font-color="#ffffff" 
+      data-coffee-color="#FFDD00">
+    </script>
+  </div>
+  
+  <script>
+    // Function to calculate the required number of courts for a given player count
+    function calculateRequiredCourts(playerCount) {
+      // For 4-5 players, only 1 court is needed
+      if (playerCount <= 5) return 1;
+      
+      // For 6-7 players, 1 court is needed (2-3 players sit out each round)
+      if (playerCount <= 7) return 1;
+      
+      // For 8 players, 2 courts are needed (0 players sit out each round)
+      if (playerCount === 8) return 2;
+      
+      // For 9 players, 2 courts are needed (1 player sits out each round)
+      if (playerCount === 9) return 2;
+      
+      // For 10-11 players, 2 courts are needed (2-3 players sit out each round)
+      if (playerCount <= 11) return 2;
+      
+      // For 12 players, 3 courts are needed (0 players sit out each round)
+      if (playerCount === 12) return 3;
+      
+      // For 13 players, 3 courts are needed (1 player sits out each round)
+      if (playerCount === 13) return 3;
+      
+      // For 14-15 players, 3 courts are needed (2-3 players sit out each round)
+      if (playerCount <= 15) return 3;
+      
+      // For 16 players, 4 courts are needed (0 players sit out each round)
+      return 4;
+    }
+    
+    // Function to calculate the maximum number of matches per round for a given player count
+    function calculateMaxMatchesPerRound(playerCount) {
+      // Each match needs 4 players
+      return Math.floor(playerCount / 4);
+    }
+    
+    const schedules = {
+      4: ['1 & 2 vs 3 & 4', '1 & 3 vs 2 & 4', '1 & 4 vs 2 & 3'],
+      5: ['1 & 2 vs 3 & 4 (Sit: 5)', '1 & 3 vs 4 & 5 (Sit: 2)', '1 & 4 vs 2 & 5 (Sit: 3)', '1 & 5 vs 2 & 3 (Sit: 4)', '2 & 4 vs 3 & 5 (Sit: 1)'],
+      6: [
+    '1 & 2 vs 3 & 4 (Sit: 5 & 6)', 
+    '1 & 3 vs 5 & 6 (Sit: 2 & 4)', 
+    '1 & 4 vs 2 & 5 (Sit: 3 & 6)', 
+    '1 & 5 vs 2 & 6 (Sit: 3 & 4)', 
+    '1 & 6 vs 3 & 5 (Sit: 2 & 4)', 
+    '2 & 3 vs 5 & 6 (Sit: 1 & 4)', 
+    '2 & 4 vs 3 & 6 (Sit: 1 & 5)',
+    '2 & 6 vs 4 & 5 (Sit: 1 & 3)',
+    '3 & 4 vs 5 & 6 (Sit: 1 & 2)',
+    '3 & 5 vs 4 & 6 (Sit: 1 & 2)'
+  ],
+      7: [
+    '1 & 2 vs 3 & 4 (Sit: 5 & 6 & 7)', 
+    '1 & 5 vs 6 & 7 (Sit: 2 & 3 & 4)', 
+    '2 & 6 vs 4 & 7 (Sit: 1 & 3 & 5)', 
+    '3 & 5 vs 2 & 7 (Sit: 1 & 4 & 6)', 
+    '1 & 7 vs 3 & 6 (Sit: 2 & 4 & 5)', 
+    '4 & 5 vs 1 & 6 (Sit: 2 & 3 & 7)', 
+    '2 & 5 vs 3 & 7 (Sit: 1 & 4 & 6)',
+    '1 & 3 vs 2 & 6 (Sit: 4 & 5 & 7)',
+    '4 & 6 vs 5 & 7 (Sit: 1 & 2 & 3)',
+    '1 & 4 vs 2 & 3 (Sit: 5 & 6 & 7)',
+    '2 & 4 vs 5 & 6 (Sit: 1 & 3 & 7)',
+    '3 & 6 vs 4 & 7 (Sit: 1 & 2 & 5)',
+    '1 & 7 vs 5 & 6 (Sit: 2 & 3 & 4)',
+    '2 & 3 vs 5 & 7 (Sit: 1 & 4 & 6)',
+    '1 & 6 vs 3 & 7 (Sit: 2 & 4 & 5)',
+    '2 & 7 vs 4 & 5 (Sit: 1 & 3 & 6)',
+    '1 & 5 vs 3 & 4 (Sit: 2 & 6 & 7)',
+    '2 & 6 vs 1 & 7 (Sit: 3 & 4 & 5)',
+    '3 & 5 vs 4 & 6 (Sit: 1 & 2 & 7)',
+    '1 & 4 vs 6 & 7 (Sit: 2 & 3 & 5)',
+    '2 & 5 vs 1 & 3 (Sit: 4 & 6 & 7)'
+  ],
+      8: ['1 & 2 vs 3 & 4, 5 & 6 vs 7 & 8', '1 & 3 vs 5 & 7, 2 & 4 vs 6 & 8', '1 & 4 vs 6 & 7, 2 & 3 vs 5 & 8', '1 & 5 vs 2 & 6, 3 & 7 vs 4 & 8', '1 & 6 vs 3 & 8, 2 & 5 vs 4 & 7', '1 & 7 vs 4 & 6, 2 & 8 vs 3 & 5', '1 & 8 vs 2 & 7, 3 & 6 vs 4 & 5'],
+      9: [
+        '1 & 2 vs 3 & 4, 5 & 6 vs 7 & 8 (Sit: 9)', 
+        '1 & 3 vs 5 & 7, 2 & 4 vs 6 & 9 (Sit: 8)', 
+        '1 & 4 vs 8 & 9, 2 & 5 vs 3 & 6 (Sit: 7)', 
+        '1 & 5 vs 2 & 9, 3 & 8 vs 4 & 7 (Sit: 6)', 
+        '1 & 6 vs 4 & 8, 2 & 7 vs 3 & 9 (Sit: 5)', 
+        '1 & 7 vs 3 & 5, 2 & 8 vs 6 & 9 (Sit: 4)', 
+        '1 & 8 vs 5 & 9, 2 & 6 vs 4 & 7 (Sit: 3)', 
+        '1 & 9 vs 6 & 7, 3 & 4 vs 5 & 8 (Sit: 2)', 
+        '2 & 3 vs 7 & 8, 4 & 9 vs 5 & 6 (Sit: 1)'
+      ],
+      10: [
+        "4 & 6 vs 5 & 10, 2 & 3 vs 7 & 9 (Sit: 1 & 8)",
+        "10 & 9 vs 8 & 6, 3 & 1 vs 2 & 4 (Sit: 5 & 7)",
+        "9 & 5 vs 10 & 2, 8 & 1 vs 4 & 7 (Sit: 3 & 6)",
+        "2 & 8 vs 3 & 10, 5 & 4 vs 1 & 6 (Sit: 7 & 9)",
+        "6 & 9 vs 1 & 7, 2 & 5 vs 8 & 4 (Sit: 10 & 3)",
+        "1 & 4 vs 2 & 9, 3 & 6 vs 10 & 7 (Sit: 8 & 5)",
+        "5 & 1 vs 9 & 3, 7 & 8 vs 6 & 2 (Sit: 4 & 10)",
+        "4 & 10 vs 7 & 2, 6 & 5 vs 9 & 8 (Sit: 3 & 1)",
+        "5 & 7 vs 10 & 1, 4 & 9 vs 8 & 3 (Sit: 6 & 2)",
+        "7 & 3 vs 5 & 8, 1 & 2 vs 6 & 10 (Sit: 9 & 4)",
+        "6 & 7 vs 3 & 4, 10 & 8 vs 9 & 1 (Sit: 2 & 5)"
+      ],
+      11: [
+        "4 & 2 vs 1 & 10, 7 & 6 vs 5 & 8 (Sit: 3 & 9 & 11)",
+        "11 & 8 vs 3 & 9, 6 & 4 vs 2 & 5 (Sit: 1 & 7 & 10)",
+        "5 & 3 vs 8 & 2, 10 & 9 vs 1 & 7 (Sit: 6 & 11 & 4)",
+        "4 & 7 vs 6 & 11, 3 & 1 vs 5 & 9 (Sit: 8 & 10 & 2)",
+        "1 & 6 vs 7 & 3, 2 & 11 vs 8 & 10 (Sit: 9 & 4 & 5)",
+        "5 & 10 vs 9 & 4, 6 & 8 vs 1 & 11 (Sit: 7 & 2 & 3)",
+        "8 & 9 vs 10 & 6, 3 & 4 vs 2 & 7 (Sit: 11 & 5 & 1)",
+        "1 & 2 vs 11 & 5, 9 & 7 vs 4 & 8 (Sit: 10 & 3 & 6)",
+        "7 & 11 vs 2 & 9, 6 & 5 vs 3 & 10 (Sit: 4 & 1 & 8)",
+        "8 & 3 vs 4 & 1, 11 & 10 vs 5 & 7 (Sit: 2 & 6 & 9)",
+        "10 & 4 vs 3 & 11, 9 & 1 vs 2 & 6 (Sit: 5 & 8 & 7)"
+      ],
+      12: [
+        "1 & 2 vs 3 & 4, 5 & 6 vs 7 & 8, 9 & 10 vs 11 & 12",
+        "1 & 5 vs 9 & 10, 2 & 6 vs 11 & 12, 3 & 7 vs 4 & 8",
+        "1 & 6 vs 7 & 12, 2 & 5 vs 3 & 11, 4 & 9 vs 8 & 10",
+        "1 & 7 vs 2 & 10, 3 & 9 vs 6 & 11, 4 & 5 vs 8 & 12",
+        "1 & 8 vs 6 & 9, 2 & 7 vs 3 & 12, 4 & 10 vs 5 & 11",
+        "1 & 9 vs 3 & 5, 2 & 8 vs 10 & 11, 4 & 6 vs 7 & 12",
+        "1 & 10 vs 4 & 7, 2 & 9 vs 5 & 12, 3 & 8 vs 6 & 11",
+        "1 & 11 vs 5 & 8, 2 & 4 vs 9 & 12, 3 & 6 vs 7 & 10",
+        "1 & 12 vs 2 & 3, 4 & 11 vs 7 & 9, 5 & 10 vs 6 & 8",
+        "1 & 3 vs 10 & 12, 2 & 11 vs 4 & 8, 5 & 7 vs 6 & 9",
+        "1 & 4 vs 2 & 12, 3 & 10 vs 5 & 9, 6 & 8 vs 7 & 11"
+      ],
+      13: [
+        "5 & 13 vs 11 & 8, 2 & 9 vs 4 & 12, 6 & 10 vs 7 & 3 (Sit: 1)",
+        "2 & 1 vs 7 & 10, 4 & 13 vs 6 & 9, 11 & 12 vs 3 & 8 (Sit: 5)",
+        "4 & 5 vs 3 & 12, 6 & 1 vs 11 & 13, 7 & 9 vs 8 & 10 (Sit: 2)",
+        "6 & 2 vs 8 & 9, 11 & 5 vs 7 & 1, 3 & 13 vs 10 & 12 (Sit: 4)",
+        "11 & 4 vs 10 & 13, 7 & 2 vs 3 & 5, 8 & 1 vs 12 & 9 (Sit: 6)",
+        "7 & 6 vs 12 & 1, 3 & 4 vs 8 & 2, 10 & 5 vs 9 & 13 (Sit: 11)",
+        "3 & 11 vs 9 & 5, 8 & 6 vs 10 & 4, 12 & 2 vs 13 & 1 (Sit: 7)",
+        "8 & 7 vs 13 & 2, 10 & 11 vs 12 & 6, 9 & 4 vs 1 & 5 (Sit: 3)",
+        "10 & 3 vs 1 & 4, 12 & 7 vs 9 & 11, 13 & 6 vs 5 & 2 (Sit: 8)",
+        "12 & 8 vs 5 & 6, 9 & 3 vs 13 & 7, 1 & 11 vs 2 & 4 (Sit: 10)",
+        "9 & 10 vs 2 & 11, 13 & 8 vs 1 & 3, 5 & 7 vs 4 & 6 (Sit: 12)",
+        "13 & 12 vs 4 & 7, 1 & 10 vs 5 & 8, 2 & 3 vs 6 & 11 (Sit: 9)",
+        "1 & 9 vs 6 & 3, 5 & 12 vs 2 & 10, 4 & 8 vs 11 & 7 (Sit: 13)"
+      ],
+      14: [
+        "6 & 10 vs 9 & 1, 4 & 3 vs 12 & 2, 13 & 7 vs 5 & 11 (Sit: 8 & 14)",
+        "14 & 13 vs 8 & 12, 11 & 4 vs 3 & 1, 5 & 9 vs 7 & 2 (Sit: 6 & 10)",
+        "5 & 14 vs 13 & 10, 7 & 11 vs 4 & 12, 2 & 3 vs 9 & 6 (Sit: 1 & 8)",
+        "4 & 8 vs 9 & 11, 13 & 1 vs 2 & 10, 6 & 12 vs 3 & 5 (Sit: 14 & 7)",
+        "14 & 12 vs 2 & 5, 6 & 7 vs 8 & 9, 10 & 1 vs 11 & 13 (Sit: 3 & 4)",
+        "13 & 3 vs 1 & 7, 11 & 10 vs 2 & 14, 8 & 5 vs 6 & 4 (Sit: 12 & 9)",
+        "10 & 12 vs 6 & 8, 1 & 4 vs 5 & 7, 9 & 13 vs 14 & 3 (Sit: 2 & 11)",
+        "4 & 5 vs 14 & 9, 2 & 13 vs 6 & 11, 7 & 12 vs 8 & 1 (Sit: 10 & 3)",
+        "10 & 14 vs 7 & 4, 11 & 8 vs 13 & 5, 1 & 2 vs 12 & 3 (Sit: 9 & 6)",
+        "7 & 8 vs 10 & 3, 5 & 6 vs 12 & 11, 14 & 1 vs 9 & 2 (Sit: 4 & 13)",
+        "12 & 1 vs 11 & 14, 4 & 2 vs 10 & 8, 3 & 7 vs 13 & 6 (Sit: 9 & 5)",
+        "3 & 9 vs 8 & 13, 1 & 11 vs 14 & 6, 4 & 10 vs 5 & 12 (Sit: 7 & 2)",
+        "14 & 4 vs 1 & 6, 10 & 5 vs 3 & 8, 11 & 2 vs 7 & 9 (Sit: 13 & 12)",
+        "2 & 6 vs 13 & 4, 8 & 14 vs 11 & 3, 12 & 9 vs 10 & 7 (Sit: 5 & 1)",
+        "12 & 13 vs 4 & 9, 3 & 6 vs 14 & 7, 2 & 8 vs 1 & 5 (Sit: 11 & 10)"
+      ],
+      15: [
+        "2 & 8 vs 3 & 4, 5 & 15 vs 12 & 9, 6 & 10 vs 11 & 13 (Sit: 1 & 7 & 14)",
+        "3 & 9 vs 4 & 5, 7 & 11 vs 12 & 14, 6 & 1 vs 13 & 10 (Sit: 2 & 8 & 15)",
+        "7 & 2 vs 14 & 11, 4 & 10 vs 5 & 6, 1 & 9 vs 13 & 15 (Sit: 3 & 8 & 12)",
+        "5 & 11 vs 6 & 7, 8 & 3 vs 15 & 12, 9 & 13 vs 14 & 1 (Sit: 2 & 4 & 10)",
+        "6 & 12 vs 7 & 8, 10 & 14 vs 15 & 2, 9 & 4 vs 1 & 13 (Sit: 3 & 5 & 11)",
+        "11 & 15 vs 1 & 3, 10 & 5 vs 2 & 14, 7 & 13 vs 8 & 9 (Sit: 4 & 6 & 12)",
+        "8 & 14 vs 9 & 10, 11 & 6 vs 3 & 15, 12 & 1 vs 2 & 4 (Sit: 5 & 7 & 13)",
+        "9 & 15 vs 10 & 11, 13 & 2 vs 3 & 5, 12 & 7 vs 4 & 1 (Sit: 6 & 8 & 14)",
+        "14 & 3 vs 4 & 6, 13 & 8 vs 5 & 2, 10 & 1 vs 11 & 12 (Sit: 7 & 9 & 15)",
+        "11 & 2 vs 12 & 13, 14 & 9 vs 6 & 3, 15 & 4 vs 5 & 7 (Sit: 1 & 8 & 10)",
+        "12 & 3 vs 13 & 14, 1 & 5 vs 6 & 8, 15 & 10 vs 7 & 4 (Sit: 2 & 9 & 11)",
+        "2 & 6 vs 7 & 9, 1 & 11 vs 8 & 5, 13 & 4 vs 14 & 15 (Sit: 3 & 10 & 12)",
+        "14 & 5 vs 15 & 1, 2 & 12 vs 9 & 6, 3 & 7 vs 8 & 10 (Sit: 4 & 11 & 13)",
+        "15 & 6 vs 1 & 2, 4 & 8 vs 9 & 11, 3 & 13 vs 10 & 7 (Sit: 5 & 12 & 14)",
+        "5 & 9 vs 10 & 12, 4 & 14 vs 11 & 8, 1 & 7 vs 2 & 3 (Sit: 6 & 13 & 15)"
+      ],
+      16: [
+        "1 & 2 vs 3 & 4, 5 & 6 vs 7 & 8, 9 & 10 vs 11 & 12, 13 & 14 vs 15 & 16",
+        "1 & 3 vs 5 & 7, 2 & 4 vs 6 & 8, 9 & 11 vs 13 & 15, 10 & 12 vs 14 & 16",
+        "1 & 4 vs 5 & 8, 2 & 3 vs 6 & 7, 9 & 12 vs 13 & 16, 10 & 11 vs 14 & 15",
+        "1 & 5 vs 9 & 13, 2 & 6 vs 10 & 14, 3 & 7 vs 11 & 15, 4 & 8 vs 12 & 16",
+        "1 & 6 vs 9 & 14, 2 & 5 vs 10 & 13, 3 & 8 vs 11 & 16, 4 & 7 vs 12 & 15",
+        "1 & 7 vs 9 & 15, 2 & 8 vs 10 & 16, 3 & 5 vs 11 & 13, 4 & 6 vs 12 & 14",
+        "1 & 8 vs 9 & 16, 2 & 7 vs 10 & 15, 3 & 6 vs 11 & 14, 4 & 5 vs 12 & 13",
+        "1 & 9 vs 2 & 10, 3 & 11 vs 4 & 12, 5 & 13 vs 6 & 14, 7 & 15 vs 8 & 16",
+        "1 & 10 vs 2 & 9, 3 & 12 vs 4 & 11, 5 & 14 vs 6 & 13, 7 & 16 vs 8 & 15",
+        "1 & 11 vs 2 & 12, 3 & 9 vs 4 & 10, 5 & 15 vs 6 & 16, 7 & 13 vs 8 & 14",
+        "1 & 12 vs 2 & 11, 3 & 10 vs 4 & 9, 5 & 16 vs 6 & 15, 7 & 14 vs 8 & 13",
+        "1 & 13 vs 2 & 14, 3 & 15 vs 4 & 16, 5 & 9 vs 6 & 10, 7 & 11 vs 8 & 12",
+        "1 & 14 vs 2 & 13, 3 & 16 vs 4 & 15, 5 & 10 vs 6 & 9, 7 & 12 vs 8 & 11",
+        "1 & 15 vs 2 & 16, 3 & 13 vs 4 & 14, 5 & 11 vs 6 & 12, 7 & 9 vs 8 & 10",
+        "1 & 16 vs 2 & 15, 3 & 14 vs 4 & 13, 5 & 12 vs 6 & 11, 7 & 10 vs 8 & 9"
+      ]
+    };
+
+    function generate() {
+      // Get input values
+      const count = parseInt(document.getElementById("playerCount").value);
+      const availableCourts = parseInt(document.getElementById("courtCount").value);
+      const roundTime = parseInt(document.getElementById("roundTime").value);
+      const resultsContainer = document.getElementById("results-container");
+      const results = document.getElementById("results");
+      
+      // Clear previous results
+      results.innerHTML = "";
+      
+      // Validate inputs
+      let isValid = true;
+      
+      if (isNaN(count) || count < 4 || count > 16) {
+        document.getElementById("playerCountError").classList.remove("hidden");
+        isValid = false;
+      } else {
+        document.getElementById("playerCountError").classList.add("hidden");
+      }
+      
+      if (isNaN(availableCourts) || availableCourts < 1 || availableCourts > 5) {
+        document.getElementById("courtCountError").classList.remove("hidden");
+        isValid = false;
+      } else {
+        document.getElementById("courtCountError").classList.add("hidden");
+      }
+      
+      if (!isValid) {
+        resultsContainer.classList.add("hidden");
+        return;
+      }
+      
+      // Calculate required courts for this player count
+      const requiredCourts = calculateRequiredCourts(count);
+      const maxMatchesPerRound = calculateMaxMatchesPerRound(count);
+      
+      // Update the required courts info
+      const requiredCourtsInfo = document.getElementById("requiredCourtsInfo");
+      requiredCourtsInfo.innerHTML = `Optimal setup for ${count} players: <strong>${requiredCourts} court${requiredCourts !== 1 ? 's' : ''}</strong> (${maxMatchesPerRound} match${maxMatchesPerRound !== 1 ? 'es' : ''} per round)`;
+      
+      // Check if schedule exists for this player count
+      if (!schedules[count]) {
+        results.innerHTML = `<div class="error">Sorry, schedules for ${count} players are not yet available.</div>`;
+        resultsContainer.classList.remove("hidden");
+        return;
+      }
+      
+      // Get the rounds for this player count
+      const rounds = schedules[count];
+      
+      // Create a header with tournament info
+      const header = document.createElement("div");
+      header.className = "print-header";
+      
+      // Calculate total tournament time
+      const totalMinutes = rounds.length * roundTime;
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      const totalTimeStr = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+      
+      // Calculate additional time if we have limited courts
+      let additionalTimeStr = "";
+      let totalTimeWithSubrounds = totalMinutes;
+      
+      if (requiredCourts > availableCourts) {
+        // Calculate how many extra sub-rounds we'll need in total
+        let totalExtraSubrounds = 0;
+        
+        rounds.forEach(round => {
+          if (round.includes(',')) {
+            const matchCount = round.includes('(Sit:') 
+              ? round.substring(0, round.indexOf('(Sit:')).split(',').length 
+              : round.split(',').length;
+              
+            if (matchCount > availableCourts) {
+              totalExtraSubrounds += Math.ceil(matchCount / availableCourts) - 1;
+            }
+          }
+        });
+        
+        // Calculate additional time
+        const additionalMinutes = totalExtraSubrounds * roundTime;
+        totalTimeWithSubrounds = totalMinutes + additionalMinutes;
+        const addHours = Math.floor(additionalMinutes / 60);
+        const addMinutes = additionalMinutes % 60;
+        additionalTimeStr = additionalMinutes > 0 
+          ? `<p><strong>Additional Time Due to Limited Courts:</strong> ${addHours > 0 ? addHours + 'h ' : ''}${addMinutes}m</p>` 
+          : "";
+      }
+      
+      // Calculate total time with sub-rounds
+      const totalHours = Math.floor(totalTimeWithSubrounds / 60);
+      const totalMins = totalTimeWithSubrounds % 60;
+      const adjustedTotalTimeStr = totalHours > 0 ? `${totalHours}h ${totalMins}m` : `${totalMins}m`;
+      
+      header.innerHTML = `
+        <h3>Bjerring Tournament - ${count} Players</h3>
+        <p><strong>Total Rounds:</strong> ${rounds.length} | <strong>Round Duration:</strong> ${roundTime} minutes</p>
+        <p><strong>Estimated Total Time:</strong> ${adjustedTotalTimeStr}</p>
+        ${additionalTimeStr}
+        <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+      `;
+      results.appendChild(header);
+      
+      // Process each round
+      rounds.forEach((round, i) => {
+        const roundDiv = document.createElement("div");
+        roundDiv.className = "round";
+        
+        // Calculate the start time for this round
+        const startMinutes = i * roundTime;
+        const hours = Math.floor(startMinutes / 60);
+        const minutes = startMinutes % 60;
+        const timeStr = `${hours > 0 ? hours + 'h ' : ''}${minutes}m`;
+        
+        // Add round title
+        const roundTitle = document.createElement("div");
+        roundTitle.className = "round-title";
+        roundTitle.textContent = `Round ${i + 1} (Start: +${timeStr})`;
+        roundDiv.appendChild(roundTitle);
+        
+        // Process the matchups
+        if (round.includes(',')) {
+          // This round has multiple matches or sitting players with commas
+          
+          // Check if this is a round with multiple courts and sitting players
+          if (round.includes('(Sit:')) {
+            // Extract the sitting players
+            const sittingPart = round.substring(round.indexOf('(Sit:'));
+            const matchesPart = round.substring(0, round.indexOf('(Sit:'));
+            
+            // Split the matches
+            const matches = matchesPart.split(',').map(match => match.trim());
+            
+            // Calculate how many sub-rounds we need based on available courts
+            const subRoundCount = Math.ceil(matches.length / availableCourts);
+            
+            if (subRoundCount > 1) {
+              // We need multiple sub-rounds
+              const warningDiv = document.createElement("div");
+              warningDiv.className = "warning-text";
+              warningDiv.innerHTML = `<strong>Note:</strong> This round requires ${matches.length} courts, but only ${availableCourts} ${availableCourts === 1 ? 'is' : 'are'} available. The round will be split into ${subRoundCount} sub-rounds.`;
+              roundDiv.appendChild(warningDiv);
+              
+              // Create sub-rounds
+              for (let subRound = 0; subRound < subRoundCount; subRound++) {
+                const subRoundDiv = document.createElement("div");
+                subRoundDiv.className = "sub-round";
+                
+                const subRoundTitle = document.createElement("div");
+                subRoundTitle.className = "court";
+                subRoundTitle.innerHTML = `<strong>Sub-round ${subRound + 1}:</strong>`;
+                subRoundDiv.appendChild(subRoundTitle);
+                
+                // Get matches for this sub-round
+                const startIdx = subRound * availableCourts;
+                const endIdx = Math.min(startIdx + availableCourts, matches.length);
+                
+                for (let j = startIdx; j < endIdx; j++) {
+                  const courtDiv = document.createElement("div");
+                  courtDiv.className = "court";
+                  courtDiv.textContent = `Court ${j - startIdx + 1}: ${matches[j]}`;
+                  subRoundDiv.appendChild(courtDiv);
+                }
+                
+                roundDiv.appendChild(subRoundDiv);
+              }
+            } else {
+              // We can fit all matches in one round
+              matches.forEach((match, j) => {
+                const courtDiv = document.createElement("div");
+                courtDiv.className = "court";
+                courtDiv.textContent = `Court ${j + 1}: ${match}`;
+                roundDiv.appendChild(courtDiv);
+              });
+            }
+            
+            // Display sitting players
+            const sittingDiv = document.createElement("div");
+            sittingDiv.className = "court";
+            sittingDiv.textContent = `Sitting: ${sittingPart.replace("(Sit:", "").replace(")", "").trim()}`;
+            roundDiv.appendChild(sittingDiv);
+          } else {
+            // Just multiple courts without sitting players
+            const matches = round.split(',').map(match => match.trim());
+            
+            // Calculate how many sub-rounds we need based on available courts
+            const subRoundCount = Math.ceil(matches.length / availableCourts);
+            
+            if (subRoundCount > 1) {
+              // We need multiple sub-rounds
+              const warningDiv = document.createElement("div");
+              warningDiv.className = "warning-text";
+              warningDiv.innerHTML = `<strong>Note:</strong> This round requires ${matches.length} courts, but only ${availableCourts} ${availableCourts === 1 ? 'is' : 'are'} available. The round will be split into ${subRoundCount} sub-rounds.`;
+              roundDiv.appendChild(warningDiv);
+              
+              // Create sub-rounds
+              for (let subRound = 0; subRound < subRoundCount; subRound++) {
+                const subRoundDiv = document.createElement("div");
+                subRoundDiv.className = "sub-round";
+                
+                const subRoundTitle = document.createElement("div");
+                subRoundTitle.className = "court";
+                subRoundTitle.innerHTML = `<strong>Sub-round ${subRound + 1}:</strong>`;
+                subRoundDiv.appendChild(subRoundTitle);
+                
+                // Get matches for this sub-round
+                const startIdx = subRound * availableCourts;
+                const endIdx = Math.min(startIdx + availableCourts, matches.length);
+                
+                for (let j = startIdx; j < endIdx; j++) {
+                  const courtDiv = document.createElement("div");
+                  courtDiv.className = "court";
+                  courtDiv.textContent = `Court ${j - startIdx + 1}: ${matches[j]}`;
+                  subRoundDiv.appendChild(courtDiv);
+                }
+                
+                roundDiv.appendChild(subRoundDiv);
+              }
+            } else {
+              // We can fit all matches in one round
+              matches.forEach((match, j) => {
+                const courtDiv = document.createElement("div");
+                courtDiv.className = "court";
+                courtDiv.textContent = `Court ${j + 1}: ${match}`;
+                roundDiv.appendChild(courtDiv);
+              });
+            }
+          }
+        } else {
+          // Single court in this round
+          // Extract the sitting players if present
+          let matchText = round;
+          let sittingText = "";
+          
+          if (round.includes("(Sit:")) {
+            const parts = round.split("(Sit:");
+            matchText = parts[0].trim();
+            sittingText = "(Sit:" + parts[1].trim();
+          }
+          
+          const courtDiv = document.createElement("div");
+          courtDiv.className = "court";
+          courtDiv.textContent = `Court 1: ${matchText}`;
+          roundDiv.appendChild(courtDiv);
+          
+          if (sittingText) {
+            const sittingDiv = document.createElement("div");
+            sittingDiv.className = "court";
+            sittingDiv.textContent = `Sitting: ${sittingText.replace("(Sit:", "").replace(")", "").trim()}`;
+            roundDiv.appendChild(sittingDiv);
+          }
+        }
+        
+        results.appendChild(roundDiv);
+      });
+      
+      // Add a player tracking sheet for the printed version
+      const trackingSheet = document.createElement("div");
+      trackingSheet.className = "player-tracking";
+      
+      let trackingHTML = `
+        <h3>Player Tracking Sheet</h3>
+        <table class="tracking-table">
+          <thead>
+            <tr>
+              <th>Player #</th>
+              <th>Player Name</th>
+              <th>Wins</th>
+              <th>Losses</th>
+              <th>Point Differential</th>
+              <th>Final Rank</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      
+      // Create rows for each player
+      for (let i = 1; i <= count; i++) {
+        trackingHTML += `
+          <tr>
+            <td>${i}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        `;
+      }
+      
+      trackingHTML += `
+          </tbody>
+        </table>
+        <div class="tracking-notes">
+          <h4>Notes:</h4>
+          <p>• Record a win (W) or loss (L) for each player after every round</p>
+          <p>• Track point differential (e.g., +4 for winning by 4 points, -3 for losing by 3 points)</p>
+          <p>• The winner is the player with the most wins. If tied, use point differential as a tiebreaker.</p>
+        </div>
+      `;
+      
+      trackingSheet.innerHTML = trackingHTML;
+      results.appendChild(trackingSheet);
+      
+      // Show the results container
+      resultsContainer.classList.remove("hidden");
+    }
+    
+    // Function to export as PDF
+    function exportPDF() {
+      // Update the date in the footer
+      document.getElementById('print-date').textContent = new Date().toLocaleDateString();
+      
+      // Get tournament details for the filename
+      const count = parseInt(document.getElementById("playerCount").value);
+      const roundTime = parseInt(document.getElementById("roundTime").value);
+      
+      // Create a suggested filename for the PDF
+      const filename = `Bjerring_Tournament_${count}_Players_${new Date().toLocaleDateString().replace(/\//g, '-')}.pdf`;
+      
+      // Alert the user with instructions
+      alert(`To save as PDF:\n\n1. The print dialog will open\n2. Select "Save as PDF" as the destination\n3. Suggested filename: ${filename}\n\nClick OK to continue.`);
+      
+      // Add a slight delay to ensure the date is updated before printing
+      setTimeout(() => {
+        window.print();
+      }, 100);
+    }
+    
+    // Function to update court recommendation based on player count
+    function updateCourtRecommendation() {
+      const playerCount = parseInt(document.getElementById("playerCount").value);
+      
+      if (isNaN(playerCount) || playerCount < 4 || playerCount > 16) {
+        document.getElementById("courtRecommendation").innerHTML = "";
+        return;
+      }
+      
+      const requiredCourts = calculateRequiredCourts(playerCount);
+      const maxMatchesPerRound = calculateMaxMatchesPerRound(playerCount);
+      
+      // Calculate how many players sit out each round
+      const playersPerRound = maxMatchesPerRound * 4; // 4 players per match
+      const sittingPlayers = playerCount - playersPerRound;
+      
+      let sittingText = "";
+      if (sittingPlayers > 0) {
+        sittingText = ` (${sittingPlayers} player${sittingPlayers !== 1 ? 's' : ''} sit${sittingPlayers === 1 ? 's' : ''} out each round)`;
+      }
+      
+      document.getElementById("courtRecommendation").innerHTML = 
+        `<strong>Recommended:</strong> ${requiredCourts} court${requiredCourts !== 1 ? 's' : ''} for ${playerCount} players${sittingText}`;
+      
+      // Update the court count input to match the recommendation
+      document.getElementById("courtCount").value = requiredCourts;
+    }
+    
+    // Initialize with default values
+    window.onload = function() {
+      // Update court recommendation for the default player count
+      updateCourtRecommendation();
+      
+      // Generate the schedule
+      generate();
+      
+      // Set the current date in the print footer
+      document.getElementById('print-date').textContent = new Date().toLocaleDateString();
+    };
+  </script>
+</body>
+</html>
