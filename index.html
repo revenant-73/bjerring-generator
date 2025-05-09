@@ -266,6 +266,9 @@
     }
     
     @media print {
+      @page {
+        margin: 0.5cm;
+      }
       body {
         background: white;
         color: #333;
@@ -314,11 +317,13 @@
         margin-bottom: 20px;
         border-bottom: 1px solid #ccc;
         padding-bottom: 10px;
+        page-break-after: avoid;
       }
       .print-header p {
         margin: 5px 0;
         font-size: 12pt;
       }
+      /* Ensure rounds don't break across pages */
       .round {
         background: white;
         color: #333;
@@ -326,6 +331,12 @@
         border-radius: 0;
         margin-bottom: 15px;
         page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      /* If a round needs to break to a new page, make it start there */
+      .round:not(:first-child) {
+        page-break-before: auto;
+        break-before: auto;
       }
       .round-title {
         color: #333;
@@ -333,6 +344,8 @@
         padding: 8px;
         border-bottom: 1px solid #ccc;
         font-size: 14pt;
+        page-break-after: avoid;
+        break-after: avoid;
       }
       .court {
         padding: 8px 15px;
@@ -341,6 +354,11 @@
       }
       .court:nth-child(even) {
         background: #f9f9f9;
+      }
+      /* Keep sub-rounds together */
+      .sub-round {
+        page-break-inside: avoid;
+        break-inside: avoid;
       }
       .no-print {
         display: none !important;
@@ -359,14 +377,34 @@
       .error {
         color: #d9534f;
       }
+      /* Ensure player tracking starts on a new page and stays together */
       .player-tracking {
         display: block;
         page-break-before: always;
+        break-before: page;
+        page-break-inside: avoid;
+        break-inside: avoid;
         margin-top: 20px;
       }
       .tracking-table {
         width: 100%;
         border-collapse: collapse;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      /* Keep table rows together */
+      .tracking-table tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      /* Keep table header with the first few rows */
+      .tracking-table thead {
+        display: table-header-group;
+      }
+      /* Keep table body together */
+      .tracking-table tbody {
+        page-break-inside: avoid;
+        break-inside: avoid;
       }
       .tracking-table th {
         background-color: #f5f5f5 !important;

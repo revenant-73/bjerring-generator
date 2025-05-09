@@ -1,6 +1,6 @@
 // Service Worker for Bjerring Tournament Generator
 
-const CACHE_NAME = 'bjerring-tournament-v2';
+const CACHE_NAME = 'bjerring-tournament-v3';
 const urlsToCache = [
   '/',
   '/index.html',
