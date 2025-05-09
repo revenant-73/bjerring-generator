@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Generate optimal volleyball tournament schedules where every player plays with and against every other player." />
+  <meta name="theme-color" content="#FF4040">
   <title>Bjerring Tournament Generator</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏐</text></svg>" />
+  <link rel="manifest" href="/manifest.json" />
   <style>
     body {
       background: #0f0f0f;
@@ -14,10 +18,19 @@
       align-items: center;
       padding-bottom: 2rem;
     }
-    h1 {
-      color: coral;
-      font-size: 2.5rem;
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 90%;
+      max-width: 800px;
       margin-top: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      color: #FF4040;
+      font-size: 2.5rem;
+      margin: 0;
     }
     .container {
       background: #121212;
@@ -37,7 +50,7 @@
     }
     .info-box h3 {
       margin-top: 0;
-      color: coral;
+      color: #FF4040;
     }
     .info-box h3:not(:first-child) {
       margin-top: 1.5rem;
@@ -64,6 +77,8 @@
       border: none;
       font-size: 1rem;
       box-sizing: border-box;
+      -webkit-appearance: none;
+      appearance: none;
     }
     input {
       background: #1e1e1e;
@@ -74,9 +89,15 @@
       color: white;
       cursor: pointer;
       transition: background-color 0.3s;
+      -webkit-tap-highlight-color: transparent;
     }
     button:hover {
-      background: coral;
+      background: #FF4040;
+    }
+    @media (hover: none) {
+      button:active {
+        background: #FF4040;
+      }
     }
     pre {
       background: #1a1a1a;
@@ -93,7 +114,7 @@
     }
     .round-title {
       font-weight: bold;
-      color: coral;
+      color: #FF4040;
       margin-bottom: 0.5rem;
     }
     .court {
@@ -128,7 +149,16 @@
       padding-left: 0.5rem;
     }
     .coffee-container {
-      margin-top: 1rem;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .coffee-message {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-bottom: 0.2rem;
+      font-style: italic;
     }
     .hidden {
       display: none;
@@ -150,7 +180,7 @@
       margin: 0;
     }
     .collapsible-toggle {
-      color: coral;
+      color: #FF4040;
       font-size: 0.9rem;
       display: flex;
       align-items: center;
@@ -201,6 +231,40 @@
     .tracking-notes p {
       margin: 0.25rem 0;
     }
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-top: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+      .container {
+        padding: 1.5rem;
+        width: 95%;
+      }
+      .info-box {
+        padding: 1rem;
+      }
+      .coffee-container {
+        align-items: center;
+        margin-top: 0.5rem;
+      }
+      button {
+        padding: 0.7rem;
+      }
+      .round {
+        padding: 0.8rem;
+      }
+      .court {
+        margin-left: 0.5rem;
+      }
+    }
+    
     @media print {
       body {
         background: white;
@@ -216,6 +280,12 @@
         max-width: 100%;
         width: 100%;
         margin: 0;
+      }
+      .header-container {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
       }
       h1 {
         color: #333;
@@ -301,17 +371,17 @@
       .tracking-table th {
         background-color: #f5f5f5 !important;
         -webkit-print-color-adjust: exact;
-        color-adjust: exact;
+        print-color-adjust: exact;
       }
       .tracking-table tr:nth-child(even) {
         background-color: #f9f9f9 !important;
         -webkit-print-color-adjust: exact;
-        color-adjust: exact;
+        print-color-adjust: exact;
       }
       .tracking-notes {
         background-color: #f5f5f5 !important;
         -webkit-print-color-adjust: exact;
-        color-adjust: exact;
+        print-color-adjust: exact;
         border: 1px solid #ddd;
         border-radius: 0;
       }
@@ -319,7 +389,25 @@
   </style>
 </head>
 <body>
-  <h1>Bjerring Tournament Generator</h1>
+  <div class="header-container">
+    <h1>Bjerring Tournament Generator</h1>
+    <div class="coffee-container no-print">
+      <div class="coffee-message">Like the app?</div>
+      <!-- Buy Me a Coffee Button -->
+      <script type="text/javascript" 
+        src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" 
+        data-name="bmc-button" 
+        data-slug="L07BUWZ5Xt" 
+        data-color="#FF5F5F" 
+        data-emoji=""  
+        data-font="Cookie" 
+        data-text="Buy me a coffee" 
+        data-outline-color="#000000" 
+        data-font-color="#ffffff" 
+        data-coffee-color="#FFDD00">
+      </script>
+    </div>
+  </div>
   <div class="container">
     <div class="info-text no-print" style="text-align: center; margin-bottom: 1rem;">
       <p>👇 Click on section headers below to expand or collapse information 👇</p>
@@ -361,14 +449,14 @@
     
     <div class="form-group">
       <label for="playerCount">Number of Players (4–16):</label>
-      <input type="number" id="playerCount" min="4" max="16" value="8" onchange="updateCourtRecommendation()" />
+      <input type="number" id="playerCount" min="4" max="16" value="8" onchange="updateCourtRecommendation()" inputmode="numeric" pattern="[4-9]|1[0-6]" />
       <div id="playerCountError" class="error hidden">Please enter a number between 4 and 16.</div>
       <div id="courtRecommendation" class="recommendation-text"></div>
     </div>
     
     <div class="form-group">
       <label for="courtCount">Number of Available Courts:</label>
-      <input type="number" id="courtCount" min="1" max="5" value="2" />
+      <input type="number" id="courtCount" min="1" max="5" value="2" inputmode="numeric" pattern="[1-5]" />
       <div id="courtCountError" class="error hidden">Please enter a number between 1 and 5.</div>
       <div id="requiredCourtsInfo" class="info-text"></div>
     </div>
@@ -389,7 +477,7 @@
     <div id="results-container" class="results-container hidden">
       <h3>Tournament Schedule</h3>
       <div class="no-print">
-        <button onclick="exportPDF()" style="background-color: #4CAF50;">Export as PDF</button>
+        <button onclick="exportPDF()" style="background-color: teal;">Export as PDF</button>
       </div>
       <div id="results"></div>
       <div class="print-footer">
@@ -398,23 +486,20 @@
     </div>
   </div>
   
-  <div class="coffee-container">
-    <!-- Buy Me a Coffee Button -->
-    <script type="text/javascript" 
-      src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" 
-      data-name="bmc-button" 
-      data-slug="L07BUWZ5Xt" 
-      data-color="#FF5F5F" 
-      data-emoji=""  
-      data-font="Cookie" 
-      data-text="Buy me a coffee" 
-      data-outline-color="#000000" 
-      data-font-color="#ffffff" 
-      data-coffee-color="#FFDD00">
-    </script>
-  </div>
-  
   <script>
+    // Register Service Worker for offline capability
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(error => {
+            console.log('ServiceWorker registration failed: ', error);
+          });
+      });
+    }
+    
     // Function to toggle collapsible sections
     function toggleCollapsible(contentId, iconId) {
       const content = document.getElementById(contentId);
@@ -444,6 +529,33 @@
         // Make sure icons are in the correct state
         document.querySelectorAll('.icon').forEach(icon => {
           icon.classList.remove('collapsed');
+        });
+        
+        // Add touch event listeners for mobile devices
+        document.querySelectorAll('.collapsible-header').forEach(header => {
+          header.addEventListener('touchend', function(e) {
+            // Prevent default only if this is a tap (not a scroll)
+            if (!this.moved) {
+              e.preventDefault();
+              // Extract the content and icon IDs from the onclick attribute
+              const onclickAttr = this.getAttribute('onclick');
+              if (onclickAttr) {
+                const match = onclickAttr.match(/toggleCollapsible\('([^']+)',\s*'([^']+)'\)/);
+                if (match) {
+                  toggleCollapsible(match[1], match[2]);
+                }
+              }
+            }
+          });
+          
+          // Track if the touch moved (to distinguish between tap and scroll)
+          header.addEventListener('touchstart', function() {
+            this.moved = false;
+          });
+          
+          header.addEventListener('touchmove', function() {
+            this.moved = true;
+          });
         });
       }, 100); // Delay to ensure DOM is fully rendered
     });
