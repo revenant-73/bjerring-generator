@@ -136,6 +136,37 @@
     .results-container {
       margin-top: 1.5rem;
     }
+    .collapsible-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      padding: 0.5rem 0;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .collapsible-header h3 {
+      margin: 0;
+    }
+    .collapsible-toggle {
+      color: coral;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+    }
+    .collapsible-toggle .icon {
+      margin-left: 5px;
+      transition: transform 0.3s ease;
+    }
+    .collapsible-toggle .icon.collapsed {
+      transform: rotate(-90deg);
+    }
+    .collapsible-content {
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      max-height: 0; /* Start collapsed by default, will be expanded by JS */
+    }
     .player-tracking {
       display: none; /* Only show in print mode */
       margin-top: 2rem;
@@ -192,8 +223,12 @@
         font-size: 24pt;
         margin-bottom: 10px;
       }
-      .info-box, .form-group, .coffee-container {
-        display: none;
+      .info-box, .form-group, .coffee-container, .collapsible-toggle, .info-text, button, .no-print {
+        display: none !important;
+      }
+      .collapsible-content {
+        max-height: none !important;
+        overflow: visible;
       }
       .results-container {
         margin-top: 0;
@@ -238,7 +273,7 @@
         background: #f9f9f9;
       }
       .no-print {
-        display: none;
+        display: none !important;
       }
       .print-footer {
         text-align: center;
@@ -286,23 +321,42 @@
 <body>
   <h1>Bjerring Tournament Generator</h1>
   <div class="container">
+    <div class="info-text no-print" style="text-align: center; margin-bottom: 1rem;">
+      <p>👇 Click on section headers below to expand or collapse information 👇</p>
+    </div>
     <div class="info-box">
-      <h3>What is a Bjerring Tournament?</h3>
-      <p>A Bjerring Tournament is a volleyball format where every player gets to play with and against every other player. It's ideal for practice sessions, skill development, and team building.</p>
-      <p>Players are assigned numbers, and each round features different pairings to ensure everyone plays with everyone else. This generator creates optimal schedules for 4-16 players.</p>
+      <div class="collapsible-header" onclick="toggleCollapsible('description-content', 'description-icon')">
+        <h3>What is a Bjerring Tournament?</h3>
+        <div class="collapsible-toggle">
+          <span>Hide/Show</span>
+          <span class="icon" id="description-icon">▼</span>
+        </div>
+      </div>
+      <div class="collapsible-content" id="description-content">
+        <p>A Bjerring Tournament is a volleyball format where every player gets to play with and against every other player. It's ideal for practice sessions, skill development, and team building.</p>
+        <p>Players are assigned numbers, and each round features different pairings to ensure everyone plays with everyone else. This generator creates optimal schedules for 4-16 players.</p>
+      </div>
       
-      <h3>How to Run a Bjerring Tournament</h3>
-      <ol>
-        <li><strong>Setup:</strong> Count your players and set up the recommended number of courts (the app will suggest the optimal court count).</li>
-        <li><strong>Number Players:</strong> Assign each player a unique number (1-16). Record player number and name on a whiteboard or clipboard for reference.</li>
-        <li><strong>Track Scores:</strong> Set up a whiteboard or large sheet of paper with all player numbers. After each round, add each player's points to their cumulative score.</li>
-        <li><strong>Timing:</strong> You can run the entire tournament in one session (typically 1-3 hours depending on player count) or spread rounds across multiple practices.</li>
-        <li><strong>Rotation:</strong> After each round, players find their new partners and opponents according to the schedule. Announce the next round clearly.</li>
-        <li><strong>Sitting Players:</strong> For odd-numbered player counts, some players will sit out each round. They can serve as scorekeepers or help with court management.</li>
-        <li><strong>Celebration:</strong> At the end, recognize the player with the highest cumulative score as the tournament champion!</li>
-      </ol>
-      
-      <p><em>Tip: Print the schedule before your session so you can easily track progress and keep things moving smoothly.</em></p>
+      <div class="collapsible-header" onclick="toggleCollapsible('instructions-content', 'instructions-icon')">
+        <h3>How to Run a Bjerring Tournament</h3>
+        <div class="collapsible-toggle">
+          <span>Hide/Show</span>
+          <span class="icon" id="instructions-icon">▼</span>
+        </div>
+      </div>
+      <div class="collapsible-content" id="instructions-content">
+        <ol>
+          <li><strong>Setup:</strong> Count your players and set up the recommended number of courts (the app will suggest the optimal court count).</li>
+          <li><strong>Number Players:</strong> Assign each player a unique number (1-16). Record player number and name on a whiteboard or clipboard for reference.</li>
+          <li><strong>Track Scores:</strong> Set up a whiteboard or large sheet of paper with all player numbers. After each round, add each player's points to their cumulative score.</li>
+          <li><strong>Timing:</strong> You can run the entire tournament in one session (typically 1-3 hours depending on player count) or spread rounds across multiple practices.</li>
+          <li><strong>Rotation:</strong> After each round, players find their new partners and opponents according to the schedule. Announce the next round clearly.</li>
+          <li><strong>Sitting Players:</strong> For odd-numbered player counts, some players will sit out each round. They can serve as scorekeepers or help with court management.</li>
+          <li><strong>Celebration:</strong> At the end, recognize the player with the highest cumulative score as the tournament champion!</li>
+        </ol>
+        
+        <p><em>Tip: Print the schedule before your session so you can easily track progress and keep things moving smoothly.</em></p>
+      </div>
     </div>
     
     <div class="form-group">
@@ -330,7 +384,7 @@
       </select>
     </div>
     
-    <button onclick="generate()">Generate Schedule</button>
+    <button onclick="generate()" class="no-print">Generate Schedule</button>
     
     <div id="results-container" class="results-container hidden">
       <h3>Tournament Schedule</h3>
@@ -361,6 +415,39 @@
   </div>
   
   <script>
+    // Function to toggle collapsible sections
+    function toggleCollapsible(contentId, iconId) {
+      const content = document.getElementById(contentId);
+      const icon = document.getElementById(iconId);
+      
+      // If the content is already expanded (has max-height set), collapse it
+      if (content.style.maxHeight && content.style.maxHeight !== "0px") {
+        content.style.maxHeight = "0px";
+        icon.classList.add('collapsed');
+      } else {
+        // Otherwise, expand it by setting max-height to scrollHeight
+        content.style.maxHeight = content.scrollHeight + "px";
+        icon.classList.remove('collapsed');
+      }
+    }
+    
+    // Initialize collapsible sections
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set initial state for collapsible sections (expanded)
+      setTimeout(() => {
+        const collapsibleContents = document.querySelectorAll('.collapsible-content');
+        collapsibleContents.forEach(content => {
+          // Expand all sections by default
+          content.style.maxHeight = content.scrollHeight + "px";
+        });
+        
+        // Make sure icons are in the correct state
+        document.querySelectorAll('.icon').forEach(icon => {
+          icon.classList.remove('collapsed');
+        });
+      }, 100); // Delay to ensure DOM is fully rendered
+    });
+    
     // Function to calculate the required number of courts for a given player count
     function calculateRequiredCourts(playerCount) {
       // For 4-5 players, only 1 court is needed
