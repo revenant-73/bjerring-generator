@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Generate optimal volleyball tournament schedules where every player plays with and against every other player." />
-  <meta name="theme-color" content="#FF4040">
+  <meta name="theme-color" content="#f88379">
   <title>Bjerring Tournament Generator</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏐</text></svg>" />
   <link rel="manifest" href="/manifest.json" />
@@ -28,9 +28,29 @@
       margin-bottom: 1.5rem;
     }
     h1 {
-      color: #FF4040;
+      color: #f88379;
       font-size: 2.5rem;
       margin: 0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      position: relative;
+      display: inline-block;
+    }
+    h1::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #f88379, transparent);
+      animation: shimmer 2s infinite;
+    }
+    @keyframes shimmer {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
     }
     .container {
       background: #121212;
@@ -50,7 +70,7 @@
     }
     .info-box h3 {
       margin-top: 0;
-      color: #FF4040;
+      color: #f88379;
     }
     .info-box h3:not(:first-child) {
       margin-top: 1.5rem;
@@ -92,11 +112,11 @@
       -webkit-tap-highlight-color: transparent;
     }
     button:hover {
-      background: #FF4040;
+      background: #f88379;
     }
     @media (hover: none) {
       button:active {
-        background: #FF4040;
+        background: #f88379;
       }
     }
     pre {
@@ -114,7 +134,7 @@
     }
     .round-title {
       font-weight: bold;
-      color: #FF4040;
+      color: #f88379;
       margin-bottom: 0.5rem;
     }
     .court {
@@ -180,7 +200,7 @@
       margin: 0;
     }
     .collapsible-toggle {
-      color: #FF4040;
+      color: #f88379;
       font-size: 0.9rem;
       display: flex;
       align-items: center;
@@ -241,7 +261,8 @@
       }
       h1 {
         font-size: 2rem;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+        padding: 0 0.5rem;
       }
       .container {
         padding: 1.5rem;
@@ -295,6 +316,12 @@
         text-align: center;
         font-size: 24pt;
         margin-bottom: 10px;
+        text-shadow: none;
+        font-weight: bold;
+        letter-spacing: normal;
+      }
+      h1::after {
+        display: none;
       }
       .info-box, .form-group, .coffee-container, .collapsible-toggle, .info-text, button, .no-print {
         display: none !important;
@@ -428,7 +455,7 @@
 </head>
 <body>
   <div class="header-container">
-    <h1>Bjerring Tournament Generator</h1>
+    <h1><span style="color: white;">Bjerring</span> Tournament <span style="color: teal;">Generator</span></h1>
     <div class="coffee-container no-print">
       <div class="coffee-message">Like the app?</div>
       <!-- Buy Me a Coffee Button -->
@@ -436,7 +463,7 @@
         src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" 
         data-name="bmc-button" 
         data-slug="L07BUWZ5Xt" 
-        data-color="#FF4040" 
+        data-color="#f88379" 
         data-emoji=""  
         data-font="Cookie" 
         data-text="Buy me a coffee" 
